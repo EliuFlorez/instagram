@@ -440,11 +440,7 @@ class Instagram {
       }
       $function = str_replace(self::API_URL, '', $apiCall[0]);
       $auth = (strpos($apiCall[1], 'access_token') !== false);
-      if (isset($obj->pagination->next_max_like_id)) {
-        return $this->_makeCall($function, $auth, array('max_like_id' => $obj->pagination->next_max_like_id, 'count' => $count));
-      } elseif (isset($obj->pagination->next_max_tag_id)) {
-        return $this->_makeCall($function, $auth, array('max_tag_id' => $obj->pagination->next_max_tag_id, 'count' => $count));
-      } elseif(isset($obj->pagination->next_max_id)) {
+      if (isset($obj->pagination->next_max_id)) {
         return $this->_makeCall($function, $auth, array('max_id' => $obj->pagination->next_max_id, 'count' => $count));
       } else {
         return $this->_makeCall($function, $auth, array('cursor' => $obj->pagination->next_cursor, 'count' => $count));
@@ -565,6 +561,7 @@ class Instagram {
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json'));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 90);
     
     $jsonData = curl_exec($ch);
     if (false === $jsonData) {
