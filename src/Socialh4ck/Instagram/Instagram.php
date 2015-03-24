@@ -429,21 +429,21 @@ class Instagram {
    * @param integer $count                Limit of returned results
    * @return mixed
    */
-  public function pagination($obj, $count = 0) {
-    if (true === is_object($obj) && !is_null($obj->pagination)) {
-      if (!isset($obj->pagination->next_url)) {
+  public function pagination($data, $count = 0) {
+    if (!is_null($data['pagination'])) {
+      if (!isset($data['pagination']['next_url'])) {
         return;
       }
-      $apiCall = explode('?', $obj->pagination->next_url);
+      $apiCall = explode('?', $data['pagination']['next_url']);
       if (count($apiCall) < 2) {
         return;
       }
       $function = str_replace(self::API_URL, '', $apiCall[0]);
       $auth = (strpos($apiCall[1], 'access_token') !== false);
-      if (isset($obj->pagination->next_max_id)) {
-        return $this->_makeCall($function, $auth, array('max_id' => $obj->pagination->next_max_id, 'count' => $count));
+      if (isset($data['pagination']['next_max_id'])) {
+        return $this->_makeCall($function, $auth, array('max_id' => $data['pagination']['next_max_id'], 'count' => $count));
       } else {
-        return $this->_makeCall($function, $auth, array('cursor' => $obj->pagination->next_cursor, 'count' => $count));
+        return $this->_makeCall($function, $auth, array('cursor' => $data['pagination']['next_cursor'], 'count' => $count));
       }
     } else {
       throw new Exception("Error: pagination() | This method doesn't support pagination.");
