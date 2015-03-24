@@ -542,7 +542,20 @@ class Instagram {
     }
     curl_close($ch);
     
-    return json_decode($jsonData);
+		// we expect JSON, so decode it
+		$json = @json_decode($jsonData, true);
+
+		// validate JSON
+		if ($json === null) {
+			throw new Exception('Invalid response.');
+		}
+
+		// any error
+		if (isset($json['error_type'])) {
+			throw new Exception($json);
+		}
+
+		return (array) $json;
   }
 
   /**
